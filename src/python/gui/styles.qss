@@ -1,0 +1,66 @@
+QWidget {
+    background-color: #23272f;
+    color: #f5f6fa;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 15px;
+}
+
+QPushButton {
+    background-color: #3b4252;
+    color: #eceff4;
+    border-radius: 8px;
+    padding: 7px 6px;
+    font-weight: bold;
+    border: 1px solid #4c566a;
+}
+
+QPushButton:disabled {
+    background-color: #434c5e;
+    color: #888;
+}
+
+QPushButton:hover:!disabled {
+    background-color: #5e81ac;
+    color: #fff;
+}
+
+QCheckBox, QComboBox {
+    background: transparent;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+QComboBox {
+    background-color: #2e3440;
+    border: 1px solid #4c566a;
+    color: #eceff4;
+    height: 27px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 22px;
+    border-left: 1px solid #4c566a;
+    background: #3b4252;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    margin: 2px 2px 2px 0;
+}
+
+QLabel#TitleLabel {
+    font-size: 28px;
+    font-weight: bold;
+    color: #88c0d0;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+QLabel#ImageLabel {
+    border: 2px dashed #4c566a;
+    min-height: 550px;
+    background: #2e3440;
+    color: #888;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
