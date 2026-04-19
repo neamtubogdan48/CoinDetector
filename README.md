@@ -119,6 +119,9 @@ flutter run --dart-define=COIN_COUNTER_API_KEY=your_key --dart-define=COIN_COUNT
 		<td align="center" colspan="3">
 			<img src="img/examples/exampleFlutter6.png" alt="Flutter demo 6" width="215" />
 		</td>
+		<td align="center" colspan="3">
+			<img src="img/examples/exampleFlutter7.png" alt="Flutter demo 6" width="215" />
+		</td>
 	</tr>
 </table>
 
