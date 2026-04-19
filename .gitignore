@@ -4,12 +4,8 @@
 !/img/examples/
 !/img/examples/*
 /output.jpg
-src/__pycache__/
-src/*/__pycache__/
-src/flutter_coin_detector
-src/api
-src/other/assets/logo.png
 .env
+src/python/*/__pycache__/
 
 # Miscellaneous
 *.class
@@ -39,12 +35,13 @@ migrate_working_dir/
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins-dependencies
-.pub-cache/
-.pub/
+**/.dart_tool/
+**/.flutter-plugins-dependencies
+**/.pub-cache/
+**/.pub/
 /build/
-/coverage/
+**/build/
+**/coverage/
 
 # Symbolication related
 app.*.symbols
@@ -53,6 +50,6 @@ app.*.symbols
 app.*.map.json
 
 # Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+**/android/app/debug
+**/android/app/profile
+**/android/app/release

@@ -105,25 +105,24 @@ flutter run --dart-define=COIN_COUNTER_API_KEY=your_key --dart-define=COIN_COUNT
 
 <table>
 	<tr>
-		<td align="center"><img src="https://github.com/neamtubogdan48/CoinCounter/blob/main/img/examples/exampleFlutter1.png" alt="Flutter demo 1" width="215" /></td>
-		<td align="center"><img src="https://github.com/neamtubogdan48/CoinCounter/blob/main/img/examples/exampleFlutter2.png" alt="Flutter demo 2" width="215" /></td>
-		<td align="center"><img src="https://github.com/neamtubogdan48/CoinCounter/blob/main/img/examples/exampleFlutter3.png" alt="Flutter demo 3" width="215" /></td>
+		<td align="center"><img src="img/examples/exampleFlutter1.png" alt="Flutter demo 1" width="215" /></td>
+		<td align="center"><img src="img/examples/exampleFlutter2.png" alt="Flutter demo 2" width="215" /></td>
+		<td align="center"><img src="img/examples/exampleFlutter3.png" alt="Flutter demo 3" width="215" /></td>
 	</tr>
 	<tr>
 		<td align="center" colspan="3">
-			<img src="https://github.com/neamtubogdan48/CoinCounter/blob/main/img/examples/exampleFlutter4.png" alt="Flutter demo 4" width="215" />
-			<img src="https://github.com/neamtubogdan48/CoinCounter/blob/main/img/examples/exampleFlutter5.png" alt="Flutter demo 5" width="215" />
+			<img src="img/examples/exampleFlutter4.png" alt="Flutter demo 4" width="215" />
+			<img src="img/examples/exampleFlutter5.png" alt="Flutter demo 5" width="215" />
 		</td>
 	</tr>
 	<tr>
 		<td align="center" colspan="3">
-			<img src="https://github.com/neamtubogdan48/CoinCounter/blob/main/img/examples/exampleFlutter6.png" alt="Flutter demo 6" width="215" />
-			<img src="https://github.com/neamtubogdan48/CoinCounter/blob/main/img/examples/exampleFlutter7.png" alt="Flutter demo 7" width="215" />
+			<img src="img/examples/exampleFlutter6.png" alt="Flutter demo 6" width="215" />
 		</td>
 	</tr>
 </table>
 
 ### Debug GUI analysis
 <p align="center">
-	<img src="https://github.com/neamtubogdan48/CoinCounter/blob/main/img/examples/exampleGUI.png" alt="GUI analysis demo" width="520" />
+	<img src="img/examples/exampleGUI.png" alt="GUI analysis demo" width="520" />
 </p>
