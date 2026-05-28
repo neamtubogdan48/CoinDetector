@@ -26,46 +26,6 @@ class _NoOpDebugManager:
         return
 
 
-def _build_single_pass_results(
-    manager: CalibrationManager,
-    detector: CoinDetector,
-    image,
-    valid_coins: list,
-    all_candidates: list,
-    updated_config: DetectionConfig,
-    updated_coin_analyser: CoinAnalyser,
-) -> dict:
-    """Build results dictionary"""
-    
-    # Update detector with new config and analyser
-    detector.config = updated_config
-    detector.coin_analyser = updated_coin_analyser
-    detector.processor = CoinProcessor(updated_config, updated_coin_analyser)
-
-    # Classify coins
-    classified_coins = detector.processor.classify_coins(valid_coins)
-    candidates_for_result = [
-        candidate for candidate in all_candidates
-        if candidate.get("validated")
-        or (
-            not candidate.get("orb_passed")
-            and candidate.get("overlap_passed")
-            and candidate.get("distance_passed")
-        )
-    ]
-
-    # Build results
-    results = ResultsManager.build_results(
-        image,
-        classified_coins,
-        candidates_for_result,
-        draw_total_value=False,
-    )
-    results["currency_code"] = manager.currency_code
-    results["coin_names"] = manager.coin_names
-    return results
-
-
 def calibrate_and_analyze_from_image(
     manager: CalibrationManager,
     image_path: str,
@@ -80,7 +40,7 @@ def calibrate_and_analyze_from_image(
 
     # Run calibration detection
     stage_message = "Detecting circles for auto-calibration..." if auto_mode else "Searching for reference coin..."
-    detector, image, valid_coins, all_candidates = run_calibration_detection(
+    detector, image, gray, _, calibration_valid_coins, _ = run_calibration_detection(
         config=manager.config,
         coin_analyser=manager.coin_analyser,
         image_path=image_path,
@@ -90,22 +50,30 @@ def calibrate_and_analyze_from_image(
     
     # Compute pixels/mm based on calibration mode
     if auto_mode:
-        new_pixels_per_mm = manager.scale_estimator.compute_auto(valid_coins, debug_ctx)
+        new_pixels_per_mm = manager.scale_estimator.compute_auto(calibration_valid_coins, debug_ctx)
     else:
-        new_pixels_per_mm, _, _ = manager.scale_estimator.compute_manual(valid_coins, coin_value, debug_ctx)
+        new_pixels_per_mm, _, _ = manager.scale_estimator.compute_manual(calibration_valid_coins, coin_value, debug_ctx)
 
     # Build updated config and analyser with new ratio
     updated_config, updated_coin_analyser = manager._build_updated_objects(new_pixels_per_mm)
 
-    # Build results
-    results = _build_single_pass_results(
-        manager,
-        detector,
-        image,
-        valid_coins,
-        all_candidates,
-        updated_config,
-        updated_coin_analyser,
+    # Re-validate with calibrated ratio on the validated coins
+    detector.config = updated_config
+    detector.coin_analyser = updated_coin_analyser
+    detector.processor = CoinProcessor(updated_config, updated_coin_analyser)
+
+    circles_to_validate = [(c["center"][0], c["center"][1], c["radius"]) for c in calibration_valid_coins]
+    valid_coins, all_candidates = detector.processor.validate_candidates(
+        gray, circles_to_validate, debug_ctx, detector, is_calibration=False
     )
+    classified_coins = detector.processor.classify_coins(valid_coins)
+    results = ResultsManager.build_results(
+        image,
+        classified_coins,
+        all_candidates,
+        draw_total_value=False,
+    )
+    results["currency_code"] = manager.currency_code
+    results["coin_names"] = manager.coin_names
 
     return results, updated_config, updated_coin_analyser

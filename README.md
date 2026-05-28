@@ -1,6 +1,6 @@
 # Coin Detector
 
-An advanced computer vision system for detecting and counting different currency coins in photos using OpenCV, PyQt6, and ORB feature matching.
+Flutter app with FastAPI integration for uploading images and automating coin detection and counting. The backend is an advanced Python computer‑vision system (OpenCV + ORB) and includes a PyQt6 desktop GUI for debugging and visualization.
 
 ## Requirements
 

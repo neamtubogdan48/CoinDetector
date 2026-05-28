@@ -110,7 +110,7 @@ class CalibrationManager:
         self._log_calibration_header(image_path, debug_manager, auto_mode=True)
 
         # Run calibration detection
-        _, _, valid_coins, _ = run_calibration_detection(
+        _, _, _, _, valid_coins, _ = run_calibration_detection(
             config=self.config,
             coin_analyser=self.coin_analyser,
             image_path=image_path,
@@ -137,7 +137,7 @@ class CalibrationManager:
         self._log_calibration_header(image_path, debug_manager, auto_mode=False, coin_value=coin_value)
 
         # Run calibration detection
-        _, _, valid_coins, _ = run_calibration_detection(
+        _, _, _, _, valid_coins, _ = run_calibration_detection(
             config=self.config,
             coin_analyser=self.coin_analyser,
             image_path=image_path,

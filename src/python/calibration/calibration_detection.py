@@ -1,7 +1,14 @@
 from detection.coin_detector import CoinDetector
 
 
-def run_calibration_detection(config, coin_analyser, image_path: str, debug_manager, stage_message: str):
+def run_calibration_detection(
+    config,
+    coin_analyser,
+    image_path: str,
+    debug_manager,
+    stage_message: str,
+    is_calibration: bool = True,
+):
     """Run circle detection and candidate validation for calibration purposes"""
     
     # Initialize detector with current config and analyser
@@ -16,13 +23,13 @@ def run_calibration_detection(config, coin_analyser, image_path: str, debug_mana
     # Detect circles
     circles = detector.find_circles(blurred)
     if not circles:
-        return detector, image, [], []
+        return detector, image, gray, [], [], []
 
     # Validate candidates
     valid_coins, all_candidates = detector.processor.validate_candidates(
-        gray, circles, debug_manager, detector, is_calibration=True
+        gray, circles, debug_manager, detector, is_calibration=is_calibration
     )
     
     # Log candidate details for debugging
     debug_manager._log_candidate_details(valid_coins)
-    return detector, image, valid_coins, all_candidates
+    return detector, image, gray, circles, valid_coins, all_candidates

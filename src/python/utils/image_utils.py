@@ -117,9 +117,13 @@ class ImageAnnotator:
         # Select color based on coin value
         colors = {
             1: (255, 255, 0),    # Cyan
+            2: (0, 165, 255),    # Orange
             5: (0, 255, 0),      # Green
             10: (255, 0, 0),     # Blue
-            50: (255, 0, 255)    # Magenta
+            20: (0, 255, 255),   # Yellow
+            50: (255, 0, 255),    # Magenta
+            100: (0, 128, 255),  # Deep orange
+            200: (128, 0, 255),  # Purple
         }
         color = colors.get(value, (128, 128, 128))
         
