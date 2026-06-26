@@ -189,12 +189,12 @@ class CoinAnalyser:
         return False
 
     def validate_candidate(self, gray: np.ndarray, center: tuple, radius: int, existing_coins=None, is_calibration: bool = False) -> dict:
-        """Run full validation pipeline: ORB, overlap, distance checks"""
+        """Run full validation pipeline: ORB, overlap, intensity checks"""
         result = {
             'center': center,
             'radius': radius,
-            'distance_passed': None,
-            'distance_reason': None,
+            'intensity_passed': None,
+            'intensity_reason': None,
             'overlap_passed': None,
             'overlap_reason': None,
             'orb_passed': None,
@@ -228,12 +228,12 @@ class CoinAnalyser:
         if not overlap_passed:
             reasons.append(overlap_reason)
 
-        # Distance analysis
-        distance_passed, distance_reason = self.compare_pixel_intensity(gray, center, radius)
-        result['distance_passed'] = distance_passed
-        result['distance_reason'] = distance_reason
-        if not distance_passed:
-            reasons.append(distance_reason)
+        # Intensity analysis
+        intensity_passed, intensity_reason = self.compare_pixel_intensity(gray, center, radius)
+        result['intensity_passed'] = intensity_passed
+        result['intensity_reason'] = intensity_reason
+        if not intensity_passed:
+            reasons.append(intensity_reason)
 
         # Final reason
         if reasons:

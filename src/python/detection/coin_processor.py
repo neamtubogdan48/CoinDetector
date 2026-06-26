@@ -51,7 +51,7 @@ class CoinProcessor:
             candidate_result['validated'] = bool(
             candidate_result.get('orb_passed') and 
             candidate_result.get('overlap_passed') and 
-            candidate_result.get('distance_passed')
+            candidate_result.get('intensity_passed')
             )
 
             # If candidate is valid, add to valid_coins list

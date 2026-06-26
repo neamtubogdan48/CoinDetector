@@ -1,6 +1,6 @@
 # Coin Detector
 
-Flutter app with FastAPI integration for uploading images and automating coin detection and counting. The backend is an advanced Python computer‑vision system (OpenCV + ORB) and includes a PyQt6 desktop GUI for debugging and visualization.
+A cross-platform coin detection and counting system combining computer vision, a RESTful API, and mobile client interfaces. Users capture coin images via a Flutter mobile application, which communicates with a FastAPI Python backend that employs OpenCV and ORB feature matching to detect, classify, and tally coins. A separate PyQt6 desktop GUI provides interactive debugging and visualization of the computer vision pipeline.
 
 ## Requirements
 
@@ -31,7 +31,8 @@ The GUI provides:
 
 ### Key Features
 
-- **Multi-coin Detection**: Detects Romanian coins of 1, 5, 10, and 50 bani denominations
+- **Multi-Currency Detection**: Supports a wide range of international currencies, including RON, EUR, USD, and GBP denominations.
+- **Real-size Calibration**: Uses precise physical dimensions (mm) for each currency to ensure accurate detection and classification.
 - **Real-size Calibration**: Uses actual Romanian coin dimensions (mm) for accurate detection
 - **ORB Reference Matching**: Compares detected coins with reference images using ORB descriptors
 - **Pixels↔Millimeters Conversion**: Automatic conversion between pixel measurements and real dimensions
@@ -46,39 +47,34 @@ The GUI provides:
 
 ## 2) API (FastAPI)
 
-Main endpoint:
-
-- `POST /analyze` (multipart fields: `image`, `auto_mode`, `coin_value?`, `currency_code`, `user_id`)
-
-Security:
-
-- API key header: `X-API-Key`
-- Rate limiting by `user_id`
-
-Important environment variables:
-
-- `COIN_COUNTER_API_KEY` (required)
-- `COIN_COUNTER_RATE_LIMIT_SECONDS` (optional)
-- `COIN_COUNTER_CORS_ORIGINS` (optional)
-- `COIN_COUNTER_CORS_ORIGIN_REGEX` (optional)
-
-Run API:
+Run the API server:
 
 ```bash
-uvicorn api.app:app --app-dir src --reload
+uvicorn src.api.app:app --reload --host 0.0.0.0 --port 8000 --env-file .env
 ```
 
-Health check:
+The API exposes the following endpoints:
 
-- `GET /health`
+- **`POST /analyze`**: Accepts a multipart form containing an image file and analysis parameters. Returns detected coin summaries, aggregate totals, and a base64-encoded annotated image. Requires authentication via `X-API-Key` header.
+- **`GET /health`**: Lightweight health check endpoint returning `{"status": "ok"}`.
+
+### Key Features
+
+- **Computer Vision Pipeline**: Integrates the full detection stack - Hough circle detection, ORB feature matching, calibration, radius-based classification, and image annotation - as a synchronous request-response service.
+- **API Key Authentication**: All `/analyze` requests require a valid API key transmitted via the `X-API-Key` header. Verification uses constant-time comparison (`hmac.compare_digest`). The key is loaded from the `COIN_COUNTER_API_KEY` environment variable at module import time; the server fails at startup if it is unset.
+- **Per-User Rate Limiting**: In-memory sliding-window rate limiter keyed by `user_id` (extracted from the form field or `X-User-Id` header). Configurable interval via `COIN_COUNTER_RATE_LIMIT_SECONDS` (default: 5 seconds). Returns HTTP 429 with a `Retry-After` header when the limit is exceeded. Thread-safe via `threading.Lock`.
+- **File Size Enforcement**: Uploaded images are limited to a configurable maximum via `COIN_COUNTER_MAX_UPLOAD_BYTES` (default: 15 MB). Enforced during chunked file read; returns HTTP 413 if exceeded.
+- **CORS Configuration**: Supports static origin lists (`COIN_COUNTER_CORS_ORIGINS`) and dynamic origin regex matching (`COIN_COUNTER_CORS_ORIGIN_REGEX`). Default configuration permits requests from localhost on common development ports and any localhost-origin Flutter web debug instance.
+- **Structured Response Schema**: Returns an `AnalyzeResponse` JSON payload containing a list of per-denomination `CoinValueSummary` objects (value, count, subtotal), aggregate `total_count` and `total_value`, and a base64-encoded JPEG annotated image.
+- **Temporary Workspace Isolation**: Each request creates an isolated temporary directory (`tempfile.mkdtemp`) for file processing, which is recursively removed in the `finally` block after response delivery.
+- **Input Validation**: Normalizes currency codes, validates coin denominations against the currency's allowed set, and returns descriptive HTTP 400 error messages for invalid parameters.
+- **Standardized Error Handling**: Returns HTTP 400 for invalid input, 401 for authentication failures, 413 for oversized uploads, 429 for rate limiting, and 500 for unexpected server errors.
 
 ## 3) Flutter App (mobile/web)
 
-Project folder:
+Project folder: `src/flutter_coin_detector`
 
-- `src/flutter_coin_detector`
-
-Run:
+Run the Flutter application:
 
 ```bash
 cd src/flutter_coin_detector
@@ -86,22 +82,25 @@ flutter pub get
 flutter run
 ```
 
-API integration notes:
-
-- Sends `user_id` in request body
-- Sends API key in `X-API-Key` when provided via `--dart-define`
-- Default local API base URL:
-	- Web/Desktop: `http://127.0.0.1:8000`
-	- Android emulator: `http://10.0.2.2:8000`
-
-Example with defines:
+To configure the API key at build time:
 
 ```bash
-flutter run --dart-define=COIN_COUNTER_API_KEY=your_key --dart-define=COIN_COUNTER_USER_ID=device_or_user
+flutter run -d <device_id> --dart-define=COIN_COUNTER_API_KEY=super-secret-key
 ```
 
-## Example photos
-### Android app analysis with multiple photos using Add-More function, using both light and dark themes, including scan history
+The application provides:
+
+- **Image Capture & Upload**: Select images from the device gallery or capture new photos via camera. Images are transmitted to the backend as multipart form data.
+- **Analysis Results**: Displays detected coin summaries (denomination, count, subtotal), aggregate total count, and total value. The annotated image returned by the backend is rendered inline.
+- **Multi-Photo Accumulation ("Add More")**: Successive image analyses are merged into a cumulative session. Counts and values are aggregated across all batches within a single scan session.
+- **Scan History**: Past analysis sessions are persisted locally in a Sembast NoSQL database. Users can review past results, delete individual records, or clear the entire history.
+- **Currency Selection**: Supports four currencies - RON, EUR, USD, GBP - with denomination-appropriate labeling and value formatting (e.g., "1 leu and 50 bani").
+- **Calibration Mode Toggle**: Switch between auto-calibration (backend determines scale from multiple detected coins) and manual calibration (user specifies a known coin denomination).
+- **Dark / Light / System Theme**: Three theme modes selectable via the settings screen. Selection is persisted across sessions via SharedPreferences. Both themes use Material 3 with a custom 35-slot color palette.
+
+## Example Photos
+
+### Android App Analysis - Multi-Photo Accumulation, Light & Dark Themes, Scan History
 
 <table>
 	<tr>
@@ -123,7 +122,7 @@ flutter run --dart-define=COIN_COUNTER_API_KEY=your_key --dart-define=COIN_COUNT
 	</tr>
 </table>
 
-### Debug GUI analysis
+### Desktop GUI - Debug Analysis
 <p align="center">
 	<img src="img/examples/exampleGUI.png" alt="GUI analysis demo" width="520" />
 </p>

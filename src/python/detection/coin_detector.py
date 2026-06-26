@@ -128,7 +128,7 @@ class CoinDetector:
                                     c.get('validated') or 
                                     (not c.get('orb_passed') and 
                                      c.get('overlap_passed') and 
-                                     c.get('distance_passed'))]
+                                     c.get('intensity_passed'))]
             
             # Build results with annotations
             results = ResultsManager.build_results(

@@ -149,13 +149,13 @@ class DebugManager:
             orb_reason = candidate.get("orb_reason", None)
             self.log(f"        ORB: {orb_reason if orb_reason else 'N/A'}")
 
-            distance_reason = candidate.get("distance_reason", None)
-            self.log(f"        Distance: {distance_reason if distance_reason else 'N/A'}")
+            intensity_reason = candidate.get("intensity_reason", None)
+            self.log(f"        Intensity: {intensity_reason if intensity_reason else 'N/A'}")
 
             overlap_passed = candidate.get("overlap_passed")
             orb_passed = candidate.get("orb_passed")
-            distance_passed = candidate.get("distance_passed")
-            if overlap_passed and orb_passed and distance_passed:
+            intensity_passed = candidate.get("intensity_passed")
+            if overlap_passed and orb_passed and intensity_passed:
                 self.log("        Result: VALIDATED")
             else:
                 self.log("        Result: REJECTED")

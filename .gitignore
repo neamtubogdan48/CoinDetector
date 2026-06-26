@@ -6,8 +6,6 @@
 /output.jpg
 .env
 src/python/*/__pycache__/
-/git privat
-/git public
 run.txt
 
 # Miscellaneous
